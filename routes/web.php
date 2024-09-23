@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Controller;
+use App\Http\Controllers\QuestionController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -13,6 +15,5 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::resource('/exam', App\Http\Controllers\QuestionController::class);
+Route::get('/exam/{questionId}/delete', [App\Http\Controllers\QuestionController::class, 'destroy'])->name('question.delete');
