@@ -2,6 +2,7 @@
 @section('content')
     
 <div class="relative min-h-screen bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1596367407372-96cb88503db6?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');">  
+    
     <span class="text-5xl text-center font-semibold whitespace-nowrap font-serif text-amber-200 ml-6 mt-12">Create Exam</span> 
 
     <div id="question-limit-alert" class="hidden flex items-center p-4 mb-4 text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 ml-80 mr-80" role="alert">
@@ -36,7 +37,7 @@
         </button>
     </div>
 
-    @if ($errors->any())
+     @if ($errors->any())
     <div id="error" class="alert alert-danger flex items-center p-4 mb-4 text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 ml-80 mr-80">
         <svg class="flex-shrink-0 w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
             <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
@@ -55,7 +56,7 @@
             </svg>
           </button>
     </div>
-    @endif
+    @endif 
 
     <form action="{{route('exam.store')}}" method="POST">
         @csrf
@@ -68,6 +69,7 @@
         <div id="questions-container" class="container mx-auto"></div>
         
         <div class="buttons container flex items-center justify-center ml-7">
+            
             
             <div class="btn border rounded-lg border-gray-700 p-1 px-4 font-semibold cursor-pointer ml-auto text-slate-950 hover:bg-slate-950 hover:shadow-lg hover:text-white">
                 <a href="{{route('exam.index')}}">
@@ -130,12 +132,15 @@
 
             var answerFieldsId = this.closest('.editor').querySelector('[id^=answer-fields]').id;
 
-            var newAnswer = document.createElement('input');
-            newAnswer.type = 'text';
-            newAnswer.name = 'answers[]';
-            newAnswer.placeholder = 'Answer';
-            newAnswer.classList.add('title', 'bg-gray-100', 'border', 'border-gray-300', 'rounded-lg', 'p-2', 'mb-4', 'mr-2', 'outline-none');
+            var newAnswer = document.createElement('div');
+            newAnswer.classList.add('flex', 'items-center', 'mb-4');
+            
+            var answerInput = `
+                <input type="text" name="answers[]" placeholder="Answer" class="title bg-gray-100 border border-gray-300 rounded-lg p-2 mr-2 outline-none">
+                <input type="radio" name="correct_answers[]" value="${answerCount - 1}" class="mr-2">
+            `;
 
+            newAnswer.innerHTML = answerInput;
             document.getElementById(answerFieldsId).appendChild(newAnswer);
         });
 

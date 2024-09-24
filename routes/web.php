@@ -17,3 +17,4 @@ use Illuminate\Support\Facades\Route;
 
 Route::resource('/exam', App\Http\Controllers\QuestionController::class);
 Route::get('/exam/{questionId}/delete', [App\Http\Controllers\QuestionController::class, 'destroy'])->name('question.delete');
+Route::post('/exam/result', [App\Http\Controllers\QuestionController::class, 'result'])->name('exam.result');

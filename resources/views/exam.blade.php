@@ -1,12 +1,17 @@
 @extends('layouts.app')
 @section('content')
 
-<div class="relative min-h-screen bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1596367407372-96cb88503db6?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');">  
+<div class="relative min-h-screen bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1517094857443-80776ddd155c?q=80&w=2071&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');">  
   <a href="{{route('exam.create')}}" class="flex items-center justify-center">
     <button type="button" class="mt-5 text-white bg-gradient-to-r from-cyan-400 via-cyan-500 to-cyan-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-cyan-300 dark:focus:ring-cyan-800 shadow-lg shadow-cyan-500/50 dark:shadow-lg dark:shadow-cyan-800/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 hover:shadow-2xl">Create Exam</button>
   </a>
-
-      @if (session('status'))
+    @if (session('error'))
+    <div class="alert alert-danger">
+        {{ session('error') }}
+    </div>
+    @endif
+    
+    @if (session('status'))
         <div class="px-4 sm:px-6 lg:px-8 mt-6 mb-5 mr-20">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="text-white bg-red-300 dark:bg-gray-800 dark:text-red-400 focus:ring-4 focus:outline-none overflow-hidden shadow-sm sm:rounded-lg font-serif text-lg">
@@ -20,7 +25,7 @@
 
     <div class="container flex items-center justify-center mx-auto mt-4">
     <div class="w-full lg:w-8/12">
-    <form action="" method="">
+    <form action="{{route('exam.result')}}" method="POST">
       <div class="heading text-left font-bold text-3xl m-5 text-amber-300 font-serif">Test</div>
 
       @foreach ($questions as $question)
@@ -29,7 +34,7 @@
       @csrf
 
       <div class="flex justify-end items-center mt-auto">
-        <a href="" class="text-right" >
+        <a href="{{route('exam.edit', $question->id)}}" class="text-right" >
           <button data-tooltip-target="tooltip-animation-edit-{{ $unique_id }}" type="button" class="text-white bg-slate-200 hover:bg-slate-400 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-sm p-2.5 text-center shadow-lg inline-flex items-center me-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
             <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
               <path fill-rule="evenodd" d="M11.32 6.176H5c-1.105 0-2 .949-2 2.118v10.588C3 20.052 3.895 21 5 21h11c1.105 0 2-.948 2-2.118v-7.75l-3.914 4.144A2.46 2.46 0 0 1 12.81 16l-2.681.568c-1.75.37-3.292-1.263-2.942-3.115l.536-2.839c.097-.512.335-.983.684-1.352l2.914-3.086Z" clip-rule="evenodd"/>
@@ -54,35 +59,22 @@
         </a>
         </div>
 
-      <span class="mt-3 mb-3 font-bold font-serif text-sky-700 text-lg">Question</span>
+      <span class="mt-3 mb-3 font-bold font-serif text-orange-600 text-lg">Question</span>
       <input class="title bg-gray-100 border border-gray-300 rounded-lg p-2 mb-4 outline-none" spellcheck="false" readonly type="text" value="{{$question->question}}">
       
       <span class="mt-3 mb-3 font-bold">Select One Answer</span>
-      <div class="flex items-center mb-2">
-      <input id="default-radio-1" type="radio" value="" name="default-radio" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
-      <label for="default-radio-1" class="ms-2 text-base font-medium text-gray-900 dark:text-gray-300 ml-2">{{$question->answer_1}}</label>
-      </div>
+      @php $answers = [$question->answer_1, $question->answer_2, $question->answer_3, $question->answer_4]; @endphp
 
+      @foreach ($answers as $index => $answer)
       <div class="flex items-center mb-2">
-      <input id="default-radio-2" type="radio" value="" name="default-radio" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
-      <label for="default-radio-2" class="ms-2 text-base font-medium text-gray-900 dark:text-gray-300 ml-2">{{$question->answer_2}}</label>
+          <input id="radio-{{ $unique_id }}-{{ $index }}" type="radio" value="{{ $answer }}" name="answers[{{ $question->id }}]" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+          <label for="radio-{{ $unique_id }}-{{ $index }}" class="ms-2 text-base font-medium text-gray-900 dark:text-gray-300 ml-2">{{ $answer }}</label>
       </div>
-
-      <div class="flex items-center mb-2">
-      <input id="default-radio-3" type="radio" value="" name="default-radio" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
-      <label for="default-radio-3" class="ms-2 text-base font-medium text-gray-900 dark:text-gray-300 ml-2">{{$question->answer_3}}</label>
-      </div>
-      
-      <div class="flex items-center mb-2">
-      <input id="default-radio-4" type="radio" value="" name="default-radio" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
-      <label for="default-radio-4" class="ms-2 text-base font-medium text-gray-900 dark:text-gray-300 ml-2">{{$question->answer_4}}</label>
-      </div>
-      
-      
+      @endforeach
   </div>
   @endforeach
   <div class="buttons flex mb-3">
-    <div class="btn border rounded-lg border-gray-700 p-1 px-4 font-semibold cursor-pointer ml-auto text-slate-950 hover:bg-slate-950 hover:shadow-lg hover:text-white"><a href="{{route('exam.index')}}"><button type="button">Cancel</button></a></div>
+    <div class="btn border rounded-lg border-gray-800 p-1 px-4 font-semibold cursor-pointer ml-auto text-slate-950 hover:bg-slate-950 hover:shadow-lg hover:text-white"><a href="{{route('exam.index')}}"><button type="button">Cancel</button></a></div>
     <div class="btn border rounded-lg border-indigo-500 p-1 px-4 font-semibold cursor-pointer text-gray-200 ml-2 bg-indigo-500 hover:bg-indigo-700"><button type="submit">Submit</button></div>
 </div>
 </form>
